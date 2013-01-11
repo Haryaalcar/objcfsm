@@ -45,15 +45,15 @@ typedef void(^EmptyBlock)(void);
         return;
     }
 
-    EmptyBlock leavingStateRowBlock = additionalFSMEvents[@[currentState, kWillLeaveState]];
-    if (leavingStateRowBlock) {
+    EmptyBlock leavingStateBlock = additionalFSMEvents[@[currentState, kWillLeaveState]];
+    if (leavingStateBlock) {
         NSLog(@"%@: will leave %@", fsmName, currentState);
-        leavingStateRowBlock();
+        leavingStateBlock();
     }
 
     NSLog(@"%@: %@(%@) -> %@", fsmName, currentState, event, rowInfo[kTo]);
     currentState = rowInfo[kTo];
-    ((void (^)())rowInfo[kAction])();
+    ((EmptyBlock)rowInfo[kAction])();
 
     EmptyBlock enteredStateBlock = additionalFSMEvents[@[currentState, kDidEnterState]];
     if (enteredStateBlock) {
