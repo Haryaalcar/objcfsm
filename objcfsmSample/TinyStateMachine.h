@@ -10,16 +10,21 @@
 
 #define kTo @"to"
 #define kAction @"action"
+#define kWillLeaveState @"willleavestate"
+#define kDidEnterState @"didenterstate"
+
 #define START_FSM(...) (@{ __VA_ARGS__ })
 #define ROW(stateFrom, event, stateTo, action )  @[stateFrom , event] : @{kTo : stateTo, kAction : action}
+#define START_EXTRA_EVENTS(...) (@{ __VA_ARGS__ })
+#define ROW_EXTRA(state, event, action )  @[state , event] : action
 
 @interface TinyStateMachine : NSObject {
     NSString *currentState;
     NSString *fsmName;
 }
 
-+ (id)stateMachineWithName:(NSString *)name startingState:(NSString *)startingState andScheme:(NSDictionary *)scheme;
-- (id)initWithName:(NSString *)name startingState:(NSString *)startingState andScheme:(NSDictionary *)scheme;
++ (id)stateMachineWithName:(NSString *)name startingState:(NSString *)startingState andScheme:(NSDictionary *)scheme additionalEvents:(NSDictionary *)additionalEvents;
+- (id)initWithName:(NSString *)name startingState:(NSString *)startingState andScheme:(NSDictionary *)scheme additionalEvents:(NSDictionary *)additionalEvents;
 - (void)processEvent:(NSString *)event;
 
 @end

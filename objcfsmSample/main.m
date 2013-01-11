@@ -17,6 +17,7 @@
 #define kEvent1 @"event1"
 #define kEvent2 @"event2"
 #define kEvent3 @"event3"
+#define kEvent4 @"event4"
 
 int main(int argc, const char * argv[])
 {
@@ -25,15 +26,23 @@ int main(int argc, const char * argv[])
                                                          startingState:kState1
                                                              andScheme:
                                  START_FSM(
-                                           ROW(kState1, kEvent1, kState2, ^{NSLog(@"action1!!!");}),
-                                           ROW(kState1, kEvent2, kState3, ^{NSLog(@"action2!!!");}),
-                                           ROW(kState2, kEvent3, kState3, ^{NSLog(@"action3!!!");}),
-                                           ROW(kState3, kEvent3, kState4, ^{NSLog(@"action4!!!");})
+                                           ROW(kState1, kEvent1, kState2, ^{NSLog(@"action1");}),
+                                           ROW(kState1, kEvent2, kState3, ^{NSLog(@"action2");}),
+                                           ROW(kState2, kEvent3, kState3, ^{NSLog(@"action3");}),
+                                           ROW(kState3, kEvent3, kState4, ^{NSLog(@"action4");}),
+                                           ROW(kState3, kEvent4, kState2, ^{NSLog(@"action5");})
                                            )
+                                                      additionalEvents:
+                                 START_EXTRA_EVENTS(
+                                                    ROW_EXTRA(kState1, kWillLeaveState, ^{NSLog(@"action will leave state1");}),
+                                                    ROW_EXTRA(kState2, kDidEnterState,  ^{NSLog(@"action entered state2");}),
+                                                    ROW_EXTRA(kState3, kDidEnterState,  ^{NSLog(@"action entered state3");})
+                                                    )
                                  ];
         [fsm processEvent:kEvent1];
         [fsm processEvent:kEvent2];
         [fsm processEvent:kEvent3];
+        [fsm processEvent:kEvent4];
     }
 
     return 0;
