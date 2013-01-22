@@ -11,6 +11,7 @@
 typedef void(^EmptyBlock)(void);
 
 @interface TinyStateMachine () {
+    NSString *startingFSMState;
     NSDictionary *fsmScheme;
     NSDictionary *additionalFSMEvents;
 }
@@ -27,7 +28,7 @@ typedef void(^EmptyBlock)(void);
 - (id)initWithName:(NSString *)name startingState:(NSString *)startingState andScheme:(NSDictionary *)scheme additionalEvents:(NSDictionary *)additionalEvents {
     if ((self = [super init])) {
         fsmName = name;
-        currentState = startingState;
+        currentState = startingFSMState = startingState;
         fsmScheme = scheme;
         additionalFSMEvents = additionalEvents;
     }
@@ -38,28 +39,33 @@ typedef void(^EmptyBlock)(void);
     return [[self alloc] initWithName:name startingState:startingState andScheme:scheme additionalEvents:additionalEvents];
 }
 
-- (void)processEvent:(NSString *)event {
+- (void)resetToStartingState {
+    currentState = startingFSMState;
+}
+
+- (BOOL)processEvent:(NSString *)event {
     NSDictionary *rowInfo = fsmScheme[@[currentState, event]];
     if (!rowInfo) {
         NSLog(@"%@: There is no transition %@(%@)", fsmName, currentState, event);
-        return;
+        return NO;
     }
-
+    
     EmptyBlock leavingStateBlock = additionalFSMEvents[@[currentState, kWillLeaveState]];
     if (leavingStateBlock) {
         NSLog(@"%@: will leave %@", fsmName, currentState);
         leavingStateBlock();
     }
-
+    
     NSLog(@"%@: %@(%@) -> %@", fsmName, currentState, event, rowInfo[kTo]);
     currentState = rowInfo[kTo];
     ((EmptyBlock)rowInfo[kAction])();
-
+    
     EmptyBlock enteredStateBlock = additionalFSMEvents[@[currentState, kDidEnterState]];
     if (enteredStateBlock) {
         NSLog(@"%@: entered %@", fsmName, currentState);
         enteredStateBlock();
     }
+    return YES;
 }
 
 - (NSString *)description {
