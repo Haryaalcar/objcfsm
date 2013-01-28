@@ -49,6 +49,7 @@ typedef void(^EmptyBlock)(void);
         NSLog(@"%@: There is no transition %@(%@)", fsmName, currentState, event);
         return NO;
     }
+    NSString *nextState = rowInfo[kNextState];
     
     EmptyBlock leavingStateBlock = additionalFSMEvents[@[currentState, kWillLeaveState]];
     if (leavingStateBlock) {
@@ -56,8 +57,8 @@ typedef void(^EmptyBlock)(void);
         leavingStateBlock();
     }
     
-    NSLog(@"%@: %@(%@) -> %@", fsmName, currentState, event, rowInfo[kTo]);
-    currentState = rowInfo[kTo];
+    NSLog(@"%@: %@(%@) -> %@", fsmName, currentState, event, nextState);
+    currentState = nextState;
     ((EmptyBlock)rowInfo[kAction])();
     
     EmptyBlock enteredStateBlock = additionalFSMEvents[@[currentState, kDidEnterState]];

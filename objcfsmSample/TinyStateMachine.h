@@ -8,13 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
-#define kTo @"to"
+#define kNextState @"nextState"
 #define kAction @"action"
 #define kWillLeaveState @"willleavestate"
 #define kDidEnterState @"didenterstate"
 
 #define START_FSM(...) (@{ __VA_ARGS__ })
-#define ROW(stateFrom, event, stateTo, action )  @[stateFrom , event] : @{kTo : stateTo, kAction : action}
+#define ROW(aState, event, nextState, action )  @[aState , event] : @{kNextState : nextState, kAction : action}
 #define START_EXTRA_EVENTS(...) (@{ __VA_ARGS__ })
 #define ROW_EXTRA(state, event, action )  @[state , event] : action
 
