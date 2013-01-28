@@ -26,11 +26,11 @@ int main(int argc, const char * argv[])
                                                          startingState:kState1
                                                              andScheme:
                                  START_FSM(
-                                           ROW(kState1, kEvent1, kState2, ^{NSLog(@"action1");}),
-                                           ROW(kState1, kEvent2, kState3, ^{NSLog(@"action2");}),
-                                           ROW(kState2, kEvent3, kState3, ^{NSLog(@"action3");}),
-                                           ROW(kState3, kEvent3, kState4, ^{NSLog(@"action4");}),
-                                           ROW(kState3, kEvent4, kState2, ^{NSLog(@"action5");})
+                                           ROW(kState1,         kEvent1, kState2, ^{NSLog(@"action1");}),
+                                           ROW(kState2,         kEvent3, kState3, ^{NSLog(@"action3");}),
+                                           ROW(kState3,         kEvent3, kState4, ^{NSLog(@"action4");}),
+                                           ROW(kState3,         kEvent4, kState2, ^{NSLog(@"action5");}),
+                                           ROW(kFromAnyState,   kEvent2, kState3, ^{NSLog(@"action from Any state");}),
                                            )
                                                       additionalEvents:
                                  START_EXTRA_EVENTS(

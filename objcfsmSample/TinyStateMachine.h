@@ -12,6 +12,7 @@
 #define kAction @"action"
 #define kWillLeaveState @"willleavestate"
 #define kDidEnterState @"didenterstate"
+#define kFromAnyState @"fromanystate"
 
 #define START_FSM(...) (@{ __VA_ARGS__ })
 #define ROW(aState, event, nextState, action )  @[aState , event] : @{kNextState : nextState, kAction : action}
@@ -36,6 +37,7 @@
  *  ROW(stateFromN, event, stateToN, actionN )
  * )
  * where 'state' and 'event' are NSString constants, and action is a block with no parameters
+ * kFromAnyState could be used to cover several rows with identical event and action, but not defined starting states. Will not be processed, if there is explicit starting state.
  *
  * @param additionalEvents scheme, which defines the actions for before leaving and after transitioning events. Defining with macroses START_EXTRA_EVENTS and ROW_EXTRA() in form:
  * START_EXTRA_EVENTS(

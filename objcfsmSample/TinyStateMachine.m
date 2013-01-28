@@ -46,8 +46,11 @@ typedef void(^EmptyBlock)(void);
 - (BOOL)processEvent:(NSString *)event {
     NSDictionary *rowInfo = fsmScheme[@[currentState, event]];
     if (!rowInfo) {
-        NSLog(@"%@: There is no transition %@(%@)", fsmName, currentState, event);
-        return NO;
+        rowInfo = fsmScheme[@[kFromAnyState, event]];
+        if (!rowInfo) {
+            NSLog(@"%@: There is no transition %@(%@)", fsmName, currentState, event);
+            return NO;
+        }
     }
     NSString *nextState = rowInfo[kNextState];
     
