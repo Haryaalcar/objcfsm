@@ -47,6 +47,9 @@
  *  ROW_EXTRA(stateN, event, action )
  * )
  * where 'event' is in [kWillLeaveState, kDidEnterState]
+ *
+ * Recursive events and simultaneous calls from multiple threads cause assert.
+ *
  */
 + (id)stateMachineWithName:(NSString *)name startingState:(NSString *)startingState andScheme:(NSDictionary *)scheme additionalEvents:(NSDictionary *)additionalEvents;
 - (id)initWithName:(NSString *)name startingState:(NSString *)startingState andScheme:(NSDictionary *)scheme additionalEvents:(NSDictionary *)additionalEvents;

@@ -7,6 +7,7 @@
 //
 
 #import "TinyStateMachine.h"
+#import <libkern/OSAtomic.h>
 
 typedef void(^EmptyBlock)(void);
 
@@ -44,6 +45,14 @@ typedef void(^EmptyBlock)(void);
 }
 
 - (BOOL)processEvent:(NSString *)event {
+    //Recursive events not allowed
+    //Simultaneous calls from multiple threads not allowed
+    static BOOL processing = NO;
+    if (OSAtomicTestAndSet(YES, &processing)) {
+        NSAssert(NO, @"Previous processEvent not finished");
+    }
+
+    //findng a row
     NSDictionary *rowInfo = fsmScheme[@[currentState, event]];
     if (!rowInfo) {
         rowInfo = fsmScheme[@[kFromAnyState, event]];
@@ -54,21 +63,26 @@ typedef void(^EmptyBlock)(void);
     }
     NSString *nextState = rowInfo[kNextState];
     
+    //running pre-action
     EmptyBlock leavingStateBlock = additionalFSMEvents[@[currentState, kWillLeaveState]];
     if (leavingStateBlock) {
         NSLog(@"%@: will leave %@", fsmName, currentState);
         leavingStateBlock();
     }
     
+    //transition and action
     NSLog(@"%@: %@(%@) -> %@", fsmName, currentState, event, nextState);
     currentState = nextState;
     ((EmptyBlock)rowInfo[kAction])();
     
+    //running post-action
     EmptyBlock enteredStateBlock = additionalFSMEvents[@[currentState, kDidEnterState]];
     if (enteredStateBlock) {
         NSLog(@"%@: entered %@", fsmName, currentState);
         enteredStateBlock();
     }
+
+    processing = NO;
     return YES;
 }
 
