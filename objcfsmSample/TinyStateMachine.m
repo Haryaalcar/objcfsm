@@ -58,6 +58,7 @@ typedef void(^EmptyBlock)(void);
         rowInfo = fsmScheme[@[kFromAnyState, event]];
         if (!rowInfo) {
             NSLog(@"%@: There is no transition %@(%@)", fsmName, currentState, event);
+            processing = NO;
             return NO;
         }
     }
